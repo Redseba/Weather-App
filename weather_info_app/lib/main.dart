@@ -38,6 +38,7 @@ final TextEditingController _nameController = TextEditingController();
 String cityName = "Your City";
 int Temp = 0;
 String cityStatus = "No Status";
+List<Map<String, dynamic>> Forecast = [];
 
 void _updateCityName() {
       setState(() {
@@ -48,23 +49,34 @@ void _updateCityName() {
 void _fetchWeather() {
   setState(() {
     Temp = Random().nextInt(30 - 15 + 1) + 15;
-    _getStatus();
+    cityStatus = _getStatus();
     _updateCityName();
   });
 }
 
-void _getStatus() {
-  setState(() {
-    if (Random().nextInt(3) + 1 == 3) {
-      cityStatus = "Rainy";
-    } 
-    if (Random().nextInt(3) + 1 == 2){
-      cityStatus = "Cloudy";
-    }
-    if (Random().nextInt(3) + 1 == 1) {
-      cityStatus = "Sunny";
-    }
-  });
+void _fetchForecast() {
+    setState(() {
+      Forecast = List.generate(7, (index) {
+        int sDayTemp = Random().nextInt(30 - 15 + 1) + 15; // Random temperature
+        String dayStatus = _getStatus(); // Get random weather status
+        return {
+          'day': 'Day ${index + 1}',
+          'temp': sDayTemp,
+          'status': dayStatus,
+        };
+      });
+    });
+  }
+
+String _getStatus() {
+  int integer = Random().nextInt(3);
+  if (integer == 0) {
+    return "Sunny";
+  } else if (integer == 1) {
+    return "Cloudy";
+  } else {
+    return "Rainy";
+  }
 }
 
   @override
@@ -122,6 +134,38 @@ void _getStatus() {
             child: Text('Fetch Weather'),
             ),
 
+            ElevatedButton(
+            onPressed: _fetchForecast,
+            child: Text('Fetch 7-Day Forecast'),
+            ),
+
+            if (Forecast.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: Forecast.map((forecast) {
+                      return Container(
+                        width: 100,
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(forecast['day'], style: TextStyle(fontSize: 18)),
+                                Text('Temp: ${forecast['temp']} °C'),
+                                Text('Status: ${forecast['status']}'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
           ],
         ),
           ]
