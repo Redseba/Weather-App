@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 final TextEditingController _nameController = TextEditingController();
 String cityName = "Your City";
 int Temp = 0;
-String cityStatus = "None";
+String cityStatus = "No Status";
 
 void _updateCityName() {
       setState(() {
