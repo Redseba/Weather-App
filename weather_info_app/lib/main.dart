@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const MyApp());
@@ -36,16 +37,33 @@ class _MyHomePageState extends State<MyHomePage> {
 final TextEditingController _nameController = TextEditingController();
 String cityName = "Your City";
 int Temp = 0;
-String cityStatus = "Rainy";
+String cityStatus = "None";
 
 void _updateCityName() {
-    setState(() {
-      cityName = _nameController.text.isNotEmpty ? _nameController.text : "Your City";
-    });
-  }
+      setState(() {
+        cityName = _nameController.text;
+      });
+    }
+
 void _fetchWeather() {
   setState(() {
-    Temp = 15;
+    Temp = Random().nextInt(30 - 15 + 1) + 15;
+    _getStatus();
+    _updateCityName();
+  });
+}
+
+void _getStatus() {
+  setState(() {
+    if (Random().nextInt(3) + 1 == 3) {
+      cityStatus = "Rainy";
+    } 
+    if (Random().nextInt(3) + 1 == 2){
+      cityStatus = "Cloudy";
+    }
+    if (Random().nextInt(3) + 1 == 1) {
+      cityStatus = "Sunny";
+    }
   });
 }
 
@@ -75,15 +93,20 @@ void _fetchWeather() {
             onSubmitted: (_) => _updateCityName(),
             ),
 
+            SizedBox(height: 16.0),
+
+              Column(
+                children: [
+
             SizedBox(height: 8.0),
             Text(
-            'Status: $Temp', // Display the status
+            'Temperature: $Temp °C', // Display the status
             style: TextStyle(fontSize: 20.0),
             ),
 
             SizedBox(height: 8.0),
             Text(
-            'Status: $cityName', // Display the status
+            'Name: $cityName', // Display the status
             style: TextStyle(fontSize: 20.0),
             ),
 
@@ -99,9 +122,9 @@ void _fetchWeather() {
             child: Text('Fetch Weather'),
             ),
 
-            
-
           ],
+        ),
+          ]
         ),
       ),
     );
